@@ -36,20 +36,22 @@ func main() {
 	Src.Db.AutoMigrate(&Src.Building{})
 	Src.Db.AutoMigrate(&Src.Stat{})
 	Src.Db.AutoMigrate(&Src.StatGetAttempt{})
+	Src.Db.AutoMigrate(&Src.Video{})
+	Src.Db.AutoMigrate(&Src.Spot{})
 
 	go func() {
 		Src.DoEvery(time.Duration(Src.GetMaxTvStatInterval)*time.Second, Src.GetScreenStat)
 	}()
 
 	handleHTTP()
-
 }
 
 func handleHTTP() {
 
 	http.HandleFunc("/get_statistic", Src.GetStatistic)
+	http.HandleFunc("/get_maxtv_statistic", Src.GetMaxTVStatistic)
 
-	fmt.Printf("Starting Server to HANDLE ahome.tech back end\nPort : " + Src.Port + "\nAPI revision " + Src.Version + "\n\n")
+	fmt.Printf("Starting Server to HANDLE maxtv.tech back end\nPort : " + Src.Port + "\nAPI revision " + Src.Version + "\n\n")
 	if err := http.ListenAndServe(":"+Src.Port, nil); err != nil {
 		log.Fatal(err)
 	}

@@ -24,93 +24,113 @@ type Stat struct {
 	ScreensCount             int
 	TotalAdsSpaceSeconds     int64
 	TotalCoveredSpaceSeconds int64
-	attempt                  string
+	Attempt                  string
+
+	VistarSpotsS    int
+	CampsiteSpotsS  int
+	HivestackSpotsS int
+	MaxTVSpotsS     int
+	VistarSpots     int
+	CampsiteSpots   int
+	HivestackSpots  int
+	MaxTVSpots      int
+
+	TotalSpotsS         int
+	TotalCoverageSpotsS int
 }
 
 type Video struct {
 	gorm.Model
-	file        string
-	duration_ms int
+	File           string `json:"file"`
+	DurationMs     int    `json:"duration_ms"`
+	RealDurationMs int    `json:"real_duration_ms"`
 }
 
 type Ad struct {
 	gorm.Model
-	maxtv_id      string
-	company_id    string
-	parent_id     string
-	title         string
-	status        string
-	campaign_date string
-	Type          string `json:"type"`
-	end_date      string
-	name          string
-	file          string
-	duration_ms   int
-	spot          string
-	exclusive     string
-	category_id   string
-	Screen        uint
-	attempt       string
+	MaxtvId      string `json:"maxtv_id"`
+	CompanyId    string `json:"company_id"`
+	ParentId     string `json:"parent_id"`
+	Title        string `json:"title"`
+	Status       string `json:"status"`
+	CampaignDate string `json:"campaign_date"`
+	Type         string `json:"type"`
+	EndDate      string `json:"end_date"`
+	Name         string `json:"name"`
+	File         string `json:"file"`
+	DurationMs   int    `json:"duration_ms"`
+	Spot         string `json:"spot"`
+	Exclusive    string `json:"exclusive"`
+	CategoryId   string `json:"category_id"`
+	Screen       uint   `json:"Screen"`
+	Attempt      string `json:"Attempt"`
+	VideoID      uint   `json:"VideoID"`
 }
 
 type IncomingAd struct {
-	id            string
-	company_id    string
-	parent_id     string
-	title         string
-	status        string
-	campaign_date string
-	Type          string `json:"type"`
-	end_date      string
-	name          string
-	file          string
-	duration_ms   int
-	spot          string
-	exclusive     string
-	category_id   string
+	ID           string `json:"id"`
+	CompanyId    string `json:"company_id"`
+	ParentId     string `json:"parent_id"`
+	Title        string `json:"title"`
+	Status       string `json:"status"`
+	CampaignDate string `json:"campaign_date"`
+	Type         string `json:"type"`
+	EndDate      string `json:"end_date"`
+	Name         string `json:"name"`
+	File         string `json:"file"`
+	DurationMs   int    `json:"duration_ms"`
+	Spot         string `json:"spot"`
+	Exclusive    string `json:"exclusive"`
+	CategoryId   string `json:"category_id"`
+}
+
+type Spot struct {
+	gorm.Model
+	SpotCode string
+	ScreenID uint
 }
 
 type Screen struct {
 	gorm.Model
-	maxtv_id       string
-	name           string
-	sysid          string
-	vistar         bool
-	campsite       bool
-	hivestack      bool
-	dwelTime       int
-	trafficPerWeek float64
-	impression     float64
-	ads            []Ad
-	Building       uint
-	attempt        string
+	MaxtvId        string  `json:"maxtv_id"`
+	Name           string  `json:"name"`
+	SysId          string  `json:"sysid"`
+	Vistar         bool    `json:"vistar"`
+	Campsite       bool    `json:"campsite"`
+	Hivestack      bool    `json:"hivestack"`
+	DwelTime       int     `json:"dwel_time"`
+	TrafficPerWeek float64 `json:"traffic_per_week"`
+	Impression     float64 `json:"impression"`
+	Ads            []Ad    `json:"ads"`
+	Building       uint    `json:"Building"`
+	Attempt        string  `json:"Attempt"`
+	Spots          []Spot  `json:"spots"`
 }
 
 type IncomingScreen struct {
-	id             string
-	name           string
-	sysid          string
-	vistar         bool
-	campsite       bool
-	hivestack      bool
-	dwelTime       int
-	trafficPerWeek float64
-	impression     float64
-	ads            []Ad
+	ID             string       `json:"id"`
+	Name           string       `json:"name"`
+	Sysid          string       `json:"sysid"`
+	Vistar         bool         `json:"vistar"`
+	Campsite       bool         `json:"campsite"`
+	Hivestack      bool         `json:"hivestack"`
+	DwelTime       int          `json:"dwelTime"`
+	TrafficPerWeek float64      `json:"trafficPerWeek"`
+	Impression     float64      `json:"impression"`
+	Ads            []IncomingAd `json:"ads"`
 }
 
 type Building struct {
 	gorm.Model
-	maxtv_id string
-	name     string
-	address  string
-	displays []Screen
-	attempt  string
+	MaxtvId  string
+	Name     string
+	Address  string
+	Displays []Screen
+	Attempt  string
 }
-
 type IncomingBuilding struct {
-	id       string
-	name     string
-	address  string
-	displays []Screen
+	Id       string           `json:"id"`
+	Name     string           `json:"name"`
+	Address  string           `json:"address"`
+	Displays []IncomingScreen `json:"displays"`
 }
