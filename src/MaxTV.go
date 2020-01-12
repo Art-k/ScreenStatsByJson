@@ -18,6 +18,7 @@ func GetScreenStat(t time.Time) {
 }
 
 func GetMaxTvData() {
+	fmt.Println()
 	resp, err := http.Get(ScreenStatUrl)
 	if err != nil {
 		log.Fatalln(err)
