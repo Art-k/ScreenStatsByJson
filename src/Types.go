@@ -4,7 +4,7 @@ import "github.com/jinzhu/gorm"
 
 var Db *gorm.DB
 
-const DbLogMode = true
+const DbLogMode = false
 
 var Err error
 var Port string
@@ -128,9 +128,43 @@ type Building struct {
 	Displays []Screen
 	Attempt  string
 }
+
 type IncomingBuilding struct {
 	Id       string           `json:"id"`
 	Name     string           `json:"name"`
 	Address  string           `json:"address"`
 	Displays []IncomingScreen `json:"displays"`
+}
+
+type VLRec struct {
+	gorm.Model
+	MaxTvId int64  `json:"maxtv_id"`
+	Link    string `json:"link"`
+	Type    string `json:"type"`
+	Event   string `json:"event"`
+}
+
+type IncomingVLRec struct {
+	MaxTvId string `json:"id"`
+	Link    string `json:"link"`
+	Type    string `json:"type"`
+	Event   string `json:"event"`
+}
+
+type IncomingVLPage struct {
+	Total    int64           `json:"total"`
+	Entities []IncomingVLRec `json:"entities"`
+}
+
+type LogsPagesDownloded struct {
+	gorm.Model
+	Link string
+}
+
+type VistarGetAssetsRequest struct {
+	gorm.Model
+	venue_id          string
+	device_id         string
+	display_time      int64
+	direct_connection bool
 }

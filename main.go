@@ -3,6 +3,7 @@ package main
 import (
 	"./src"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/joho/godotenv"
@@ -39,6 +40,9 @@ func main() {
 	src.Db.AutoMigrate(&src.StatGetAttempt{})
 	src.Db.AutoMigrate(&src.Video{})
 	src.Db.AutoMigrate(&src.Spot{})
+	src.Db.AutoMigrate(&src.LogsPagesDownloded{})
+	src.Db.AutoMigrate(&src.VLRec{})
+	src.Db.AutoMigrate(&src.VistarGetAssetsRequest{})
 
 	go func() {
 		src.DoEvery(time.Duration(src.GetMaxTvStatInterval)*time.Second, src.GetScreenStat)
@@ -49,11 +53,28 @@ func main() {
 
 func handleHTTP() {
 
-	http.HandleFunc("/get_statistic", src.GetStatistic)
-	http.HandleFunc("/get_maxtv_statistic", src.GetMaxTVStatistic)
+	r := mux.NewRouter()
+	r.Use(authMiddleware)
+	r.Use(headerMiddleware)
+	r.HandleFunc("/coverage", src.GetCoverage)
+	r.HandleFunc("/vistar_logs", src.VistarLogs)
 
 	fmt.Printf("Starting Server to HANDLE maxtv.tech back end\nPort : " + src.Port + "\nAPI revision " + src.Version + "\n\n")
-	if err := http.ListenAndServe(":"+src.Port, nil); err != nil {
+	if err := http.ListenAndServe(":"+src.Port, r); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		next.ServeHTTP(w, r)
+	})
+}
+
+func headerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		src.FillAnswerHeader(w)
+		src.OptionsAnswer(w)
+		next.ServeHTTP(w, r)
+	})
 }

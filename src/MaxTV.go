@@ -127,9 +127,11 @@ func GetMaxTvData() {
 					spot.SpotCode = "H" + strconv.FormatUint(uint64(video.ID), 10)
 					break
 				default:
-					stat.MaxTVSpots++
-					stat.MaxTVSpotsS = stat.MaxTVSpotsS + sl
-					spot.SpotCode = "M" + strconv.FormatUint(uint64(video.ID), 10)
+					if ad.Type == "P" {
+						stat.MaxTVSpots++
+						stat.MaxTVSpotsS = stat.MaxTVSpotsS + sl
+						spot.SpotCode = "M" + strconv.FormatUint(uint64(video.ID), 10)
+					}
 					break
 				}
 
