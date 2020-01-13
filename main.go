@@ -20,13 +20,14 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 	src.Port = os.Getenv("PORT")
-	src.ScreenStatUrl = os.Getenv("SCREEN_STAT_URL")
+	//src.ScreenStatUrl = os.Getenv("SCREEN_STAT_URL")
 	src.GetMaxTvStatInterval, _ = strconv.ParseInt(os.Getenv("GET_MAXTV_STAT_INTERVAL_SECOND"), 10, 64)
 
 	src.Db, src.Err = gorm.Open("sqlite3", "screen_stat.db")
 	if src.Err != nil {
 		panic("failed to connect database")
 	}
+
 	defer src.Db.Close()
 	src.Db.LogMode(src.DbLogMode)
 
