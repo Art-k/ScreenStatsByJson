@@ -138,10 +138,11 @@ type IncomingBuilding struct {
 
 type VLRec struct {
 	gorm.Model
-	MaxTvId int64  `json:"maxtv_id"`
-	Link    string `json:"link"`
-	Type    string `json:"type"`
-	Event   string `json:"event"`
+	MaxTvId   int64  `json:"maxtv_id"`
+	Link      string `json:"link"`
+	Type      string `json:"type"`
+	Event     string `json:"event"`
+	Processed bool   `json:"processed";gorm:"default:false"`
 }
 
 type IncomingVLRec struct {
@@ -161,10 +162,19 @@ type LogsPagesDownloded struct {
 	Link string
 }
 
+type VistarGetAssetsRequestIncoming struct {
+	VenueId          string `json:"venue_id"`
+	DeviceId         string `json:"device_id"`
+	DisplayTime      int64  `json:"display_time"`
+	DirectConnection bool   `json:"direct_connection"`
+}
+
 type VistarGetAssetsRequest struct {
 	gorm.Model
-	venue_id          string
-	device_id         string
-	display_time      int64
-	direct_connection bool
+	LogFileId        uint
+	VenueId          string `json:"venue_id"`
+	DeviceId         string `json:"device_id"`
+	DisplayTime      int64  `json:"display_time"`
+	DirectConnection bool   `json:"direct_connection"`
+	HasResponse      bool   `json:"has_non_empty_response"`
 }

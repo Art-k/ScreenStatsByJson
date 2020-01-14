@@ -43,6 +43,8 @@ func main() {
 	src.Db.AutoMigrate(&src.LogsPagesDownloded{})
 	src.Db.AutoMigrate(&src.VLRec{})
 	src.Db.AutoMigrate(&src.VistarGetAssetsRequest{})
+	src.Db.AutoMigrate(&src.VistarAsset{})
+	src.Db.AutoMigrate(&src.VistarAssetResponse{})
 
 	go func() {
 		src.DoEvery(time.Duration(src.GetMaxTvStatInterval)*time.Second, src.GetScreenStat)
@@ -56,9 +58,23 @@ func handleHTTP() {
 	r := mux.NewRouter()
 	r.Use(authMiddleware)
 	r.Use(headerMiddleware)
+
+	// Jsons end points
 	r.HandleFunc("/coverage", src.GetCoverage)
+
+	// Vistar End Points
+	// Grab log files from maxtv server
+	// https://maxtvmedia.com/cms/.cron/vistar_new/logs.php?from=2019-12-13&to=2019-12-14&event=get_assets&per-page=10&page=2'
+	// GET
 	r.HandleFunc("/vistar_logs", src.VistarLogs)
+
+	// Show the progress
+	// GET
 	r.HandleFunc("/vistar_logs_stat", src.VistarLogsStat)
+
+	// Read logs to Database file -> DB
+	r.HandleFunc("/vistar_file_db", src.VistarFileDB)
+	r.HandleFunc("/vistar_file_db_bulk", src.VistarFileDBBulk)
 
 	fmt.Printf("Starting Server to HANDLE maxtv.tech back end\nPort : " + src.Port + "\nAPI revision " + src.Version + "\n\n")
 	if err := http.ListenAndServe(":"+src.Port, r); err != nil {
