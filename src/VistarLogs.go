@@ -23,7 +23,7 @@ var workStatus WorkStatus
 
 func GetVistarLogs(SD, ED, Type string) (int, int) {
 
-	var per_page int = 100
+	var per_page int = 1000
 
 	var Downloaded int = 0
 	var Skipped int = 0
