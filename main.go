@@ -58,6 +58,7 @@ func handleHTTP() {
 	r.Use(headerMiddleware)
 	r.HandleFunc("/coverage", src.GetCoverage)
 	r.HandleFunc("/vistar_logs", src.VistarLogs)
+	r.HandleFunc("/vistar_logs_stat", src.VistarLogsStat)
 
 	fmt.Printf("Starting Server to HANDLE maxtv.tech back end\nPort : " + src.Port + "\nAPI revision " + src.Version + "\n\n")
 	if err := http.ListenAndServe(":"+src.Port, r); err != nil {

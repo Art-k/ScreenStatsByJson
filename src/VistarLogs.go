@@ -10,6 +10,13 @@ import (
 	"strconv"
 )
 
+type WorkStatus struct {
+	CurrentPage    int64
+	TotalPageCount int64
+}
+
+var workStatus WorkStatus
+
 // 'https://maxtvmedia.com/cms/.cron/vistar_new/logs.php?from=2019-12-13&to=2019-12-14&event=get_assets&per-page=10&page=2'
 // get_assets | get_proofs | send_proofs
 
@@ -44,6 +51,8 @@ func GetVistarLogs(SD, ED, Type string) (int, int) {
 		}
 
 		fmt.Println(currentPage, response.Total/10)
+		workStatus.CurrentPage = int64(currentPage)
+		workStatus.TotalPageCount = response.Total / 10
 
 		for _, rec := range response.Entities {
 			var vlrec VLRec
@@ -71,6 +80,18 @@ func GetVistarLogs(SD, ED, Type string) (int, int) {
 	}
 
 	return Downloaded, Skipped
+}
+
+func VistarLogsStat(w http.ResponseWriter, r *http.Request) {
+
+	addedRecordString, _ := json.Marshal(workStatus)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	n, _ := fmt.Fprintf(w, string(addedRecordString))
+	fmt.Println(n)
+	return
+
 }
 
 func VistarLogs(w http.ResponseWriter, r *http.Request) {
