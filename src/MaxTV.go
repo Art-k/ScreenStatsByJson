@@ -47,37 +47,43 @@ func GetMaxTvData() {
 		return
 	}
 
-	var Attempt StatGetAttempt
-	Attempt.Hash = GetHash()
+	var slice Slices
+	slice.Hash = GetHash()
 
 	var stat Stat
-	stat.Attempt = Attempt.Hash
+	stat.Attempt = slice.Hash
 
 	for ind, record := range response.Entities {
 		fmt.Println(ind)
-		var building Building
-		building.MaxtvId = record.Id
-		building.Name = record.Name
-		building.Address = record.Address
-		building.Attempt = Attempt.Hash
-		Db.Create(&building)
+		var building MaxTVBuilding
+		Db.Where("max_tv_id = ?", record.Id).Find(&building)
+		if building.ID == 0 {
+			building.MaxTvId = record.Id
+			building.Name = record.Name
+			building.Address = record.Address
+			Db.Create(&building)
+		}
+
+		var slicedBuilding SlicedBuilding
+		slicedBuilding.BuildingID = building.ID
+		slicedBuilding.SliceHash = slice.Hash
 
 		for _, display := range record.Displays {
 
 			stat.ScreensCount++
 
 			var screen Screen
-			screen.MaxtvId = display.ID
+			//screen.MaxtvId = display.ID
 			screen.Name = display.Name
 			screen.SysId = display.Sysid
-			screen.Vistar = display.Vistar
-			screen.Campsite = display.Campsite
-			screen.Hivestack = display.Hivestack
-			screen.DwelTime = display.DwelTime
-			screen.TrafficPerWeek = display.TrafficPerWeek
-			screen.Impression = display.Impression
-			screen.Building = building.ID
-			screen.Attempt = Attempt.Hash
+			//screen.Vistar = display.Vistar
+			//screen.Campsite = display.Campsite
+			//screen.Hivestack = display.Hivestack
+			//screen.DwelTime = display.DwelTime
+			//screen.TrafficPerWeek = display.TrafficPerWeek
+			//screen.Impression = display.Impression
+			//screen.Building = building.ID
+			//screen.Attempt = Attempt.Hash
 			Db.Create(&screen)
 
 			for _, adv := range display.Ads {
@@ -91,7 +97,7 @@ func GetMaxTvData() {
 					Db.Create(&video)
 				}
 
-				ad.MaxtvId = adv.ID
+				ad.MaxTvId = adv.ID
 				ad.CompanyId = adv.Name
 				ad.ParentId = adv.ParentId
 				ad.Title = adv.Title
@@ -140,7 +146,7 @@ func GetMaxTvData() {
 				ad.Exclusive = adv.Exclusive
 				ad.CategoryId = adv.CategoryId
 				ad.Screen = screen.ID
-				ad.Attempt = Attempt.Hash
+				//ad.Attempt = Attempt.Hash
 				ad.VideoID = video.ID
 
 				Db.Create(&ad)
@@ -149,7 +155,7 @@ func GetMaxTvData() {
 	}
 	stat.TotalSpotsS = stat.ScreensCount * 360
 	Db.Create(&stat)
-	Db.Create(&Attempt)
+	//Db.Create(&Attempt)
 }
 
 func GetMaxTVStatistic(w http.ResponseWriter, r *http.Request) {
